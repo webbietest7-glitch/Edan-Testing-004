@@ -556,6 +556,10 @@
   background: transparent;
 }
 
+.stay-button[hidden] {
+  display: none;
+}
+
 .stay-booking__footnote {
   display: block;
   margin-top: 1.2rem;
