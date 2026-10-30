@@ -319,6 +319,10 @@ Dockerfile              container image for the static site
 4. Use a Paystack **test** card in the checkout window.
 5. Confirm the receipt page shows the booking, then check the booking on the Dashboard (Bookings).
 
+If the Paystack window shows "refused to connect" to `checkout.paystack.com`, the connection is being blocked on that device or network (ad blocker, firewall, VPN or a restrictive Wi-Fi). Try another browser or network. The site cannot fix this from its code.
+
+If availability shows an error, the message names the exact problem. A "Could not find the function stay_room_availability" error means the site is connected to a Supabase project without the Stay migrations; check section 4.
+
 ---
 
 ## 11. Progress so far
