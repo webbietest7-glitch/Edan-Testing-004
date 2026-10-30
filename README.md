@@ -120,6 +120,7 @@ Deploy the functions with the Supabase CLI (`supabase functions deploy <name>`) 
 - **Member:** a signed-in user. Can apply for membership, pay, download their receipt, and open the member space.
 - **Active member:** a member whose membership has been approved by an admin and has not expired. Gets the member benefits and the community chat.
 - **Admin:** a user whose ID is listed in the `admins` table. Gets the Dashboard link and can manage videos, applications, Stay bookings and rooms.
+- **Making someone an admin:** the person first creates an account on `/login/` with the email they will use. Then the database owner adds that account's user ID to the `admins` table (Supabase Table Editor, or an SQL insert). The account must exist in the same Supabase project the site uses. An account created in a different project, or before the site was connected, does not count and must be created again here.
 
 Admin status and membership are enforced in the database. The page checks in `js/` only decide what to show.
 
@@ -194,7 +195,7 @@ Known issue: the sign-up form on `/account/` does not match the script (it has n
 - Shows the member's tier and status. Member sections are hidden unless the membership is active and not expired (`js/members.js`).
 - The page has five sections, in this order: 01 Community (chat), 02 In Process (behind the scenes photo), 03 Gather (monthly gatherings), 04 Annual Members bonus videos, 05 Annual Members appointments.
 - Sections 04 and 05 are for annual members only. Monthly members see a locked note in their place.
-- Gatherings (`member_gatherings`) and bonus videos (`member_bonus_videos`) are loaded from the database (`js/members-content.js`). Each has a title, description, sort order, and optional image, link, or video path. Video files go in the `videos/members/` folder of the repository or the `site-videos` storage bucket.
+- Gatherings (`member_gatherings`) and bonus videos (`member_bonus_videos`) are loaded from the database (`js/members-content.js`). Each has a title, description, sort order, and optional image, link, or video path. Video files are referenced by their path, which is stored with each bonus video in the database.
 - Admins manage gatherings and bonus videos directly in the database for now. A dashboard screen for these is not built yet.
 - **Receipt:** if the member has a successful payment, a "Download receipt (PDF)" button appears. It calls the `payment-receipt` Edge Function for the most recent successful payment.
 - **Community chat:** a realtime message board for active members (`js/members-chat.js`). Members pick a username (3 to 24 letters, numbers or underscores), then post messages of up to 1000 characters. New messages appear live. Chat access is enforced by the database (`member_chat_messages` policies use `is_active_member`).
@@ -298,7 +299,7 @@ Stay functions: `stay_room_availability` (anyone), `create_stay_hold` and `get_o
 
 Stay rooms are data, not schema. Migrations create the tables only. The five sample rooms named `001` to `005` were added directly in the database for testing. On a fresh project, add rooms from the Dashboard (Rooms and blocked dates) or with an SQL insert into `stay_rooms`.
 
-The member chat tables (`member_chat_messages`, `member_chat_profiles`) and the Members content tables were created directly in the database by a migration named `members_community_gatherings_and_bonus_videos`. That migration file is not yet in `supabase/migrations/`, so a new project built from the repository alone will be missing these tables. Add the matching file to the repository before using the project for a fresh deployment.
+The member chat and Members content tables are created by the `members_community_gatherings_and_bonus_videos` migration. The `members_active_member_helper_invoker` migration then changes the `is_active_member` helper so it runs with the caller's permissions. Both are in `supabase/migrations/`, so a fresh project gets them when migrations are applied in order.
 
 ---
 
@@ -350,7 +351,6 @@ If availability shows an error, the message names the exact problem. A "Could no
 
 - Paystack public key is a placeholder, so online membership payment is disabled.
 - `payment_transactions` rows are not created anywhere, so membership payments cannot be recorded (see 7.1).
-- Chat tables are not in the migrations.
 - Sign-up on `/account/` mismatches its script.
 - Labs script throws an error on load (see the Labs section).
 - Stay page links to `about.html`, `eat.html` and `labs.html` point to non-existent paths under `/stay/`.
