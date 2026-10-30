@@ -398,6 +398,59 @@
         </p>
       </form>
 
+      <section class="stay-checkout" id="stayDetailsStep" aria-labelledby="stayCheckoutTitle" hidden>
+        <h3 class="stay-results__title" id="stayCheckoutTitle">Your booking</h3>
+        <dl class="stay-checkout__summary">
+          <div>
+            <dt>Room</dt>
+            <dd id="stayCheckoutRoom"></dd>
+          </div>
+          <div>
+            <dt>Dates</dt>
+            <dd id="stayCheckoutDates"></dd>
+          </div>
+          <div>
+            <dt>Total</dt>
+            <dd id="stayCheckoutTotal"></dd>
+          </div>
+        </dl>
+
+        <form id="stayGuestForm" novalidate>
+          <div class="stay-modal__fields">
+            <label class="stay-modal__field">
+              <span>Full name</span>
+              <input type="text" id="stayGuestName" autocomplete="name" required>
+            </label>
+
+            <label class="stay-modal__field">
+              <span>Email</span>
+              <input type="email" id="stayGuestEmail" autocomplete="email" required>
+            </label>
+
+            <label class="stay-modal__field">
+              <span>Phone</span>
+              <input type="tel" id="stayGuestPhone" autocomplete="tel" required>
+            </label>
+          </div>
+
+          <p class="stay-modal__error" id="stayGuestError" role="alert" hidden></p>
+
+          <button class="stay-button stay-button--dark stay-modal__submit" type="submit" id="stayPayButton">
+            Continue to payment
+          </button>
+
+          <button class="stay-text-button" type="button" id="stayBackToDates">
+            Back to dates
+          </button>
+        </form>
+      </section>
+
+      <section class="stay-status" id="stayStatusStep" aria-live="polite" hidden>
+        <h3 class="stay-status__title" id="stayStatusTitle"></h3>
+        <p class="stay-status__text" id="stayStatusText"></p>
+        <button class="stay-button stay-button--dark stay-modal__submit" type="button" id="stayStatusAction" hidden></button>
+      </section>
+
     </div>
   </dialog>
 
@@ -407,6 +460,7 @@
   <div data-include="../partials/nav-footer.html"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/include.js"></script>
+  <script src="https://js.paystack.co/v2/inline.js"></script>
   <script type="module" src="../js/stay.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/nav.js"></script>

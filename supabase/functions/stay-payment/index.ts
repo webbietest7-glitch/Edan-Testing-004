@@ -16,6 +16,7 @@ type BookingRow = {
   hold_expires_at: string | null;
   paystack_reference: string | null;
   paystack_authorization_url: string | null;
+  paystack_access_code: string | null;
   guest_email: string;
 };
 
@@ -82,8 +83,11 @@ async function initializePayment(
     return json({ error: "This booking is no longer waiting for payment. Please start again." }, 409);
   }
 
-  if (booking.paystack_authorization_url) {
-    return json({ authorization_url: booking.paystack_authorization_url });
+  if (booking.paystack_authorization_url && booking.paystack_access_code) {
+    return json({
+      access_code: booking.paystack_access_code,
+      authorization_url: booking.paystack_authorization_url,
+    });
   }
 
   const { error: prepareError } = await admin.rpc("prepare_stay_payment", { p_booking_id: booking.id });
@@ -104,17 +108,18 @@ async function initializePayment(
   });
 
   const authorizationUrl = initialized.data?.authorization_url;
-  if (!initialized.ok || typeof authorizationUrl !== "string") {
+  const accessCode = initialized.data?.access_code;
+  if (!initialized.ok || typeof authorizationUrl !== "string" || typeof accessCode !== "string") {
     return json({ error: "Payment could not be started. Please try again." }, 502);
   }
 
   const { error: saveError } = await admin
     .from("stay_bookings")
-    .update({ paystack_authorization_url: authorizationUrl })
+    .update({ paystack_authorization_url: authorizationUrl, paystack_access_code: accessCode })
     .eq("id", booking.id);
   if (saveError) throw saveError;
 
-  return json({ authorization_url: authorizationUrl });
+  return json({ access_code: accessCode, authorization_url: authorizationUrl });
 }
 
 async function verifyPayment(
@@ -186,7 +191,7 @@ Deno.serve(async (req: Request) => {
 
     const { data: booking, error: bookingError } = await admin
       .from("stay_bookings")
-      .select("id, booking_reference, status, total_ghs, hold_expires_at, paystack_reference, paystack_authorization_url, guest_email")
+      .select("id, booking_reference, status, total_ghs, hold_expires_at, paystack_reference, paystack_authorization_url, paystack_access_code, guest_email")
       .eq("id", bookingId)
       .eq("user_id", userData.user.id)
       .maybeSingle();

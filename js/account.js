@@ -14,6 +14,7 @@
   const AFTER_LOGIN_PATH = "/stay/?account=success";
   const GATHER_PATH = "/gather/";
   const PLAN_IDS = ["monthly", "annual"];
+  const STAY_PATH_PREFIX = "/stay/";
 
   if (
     SUPABASE_URL.startsWith("YOUR_") ||
@@ -128,7 +129,18 @@
     return PLAN_IDS.includes(plan) ? plan : null;
   }
 
+  function requestedNext() {
+    const next = new URLSearchParams(window.location.search).get("next");
+    return next && next.startsWith(STAY_PATH_PREFIX) ? next : null;
+  }
+
   function continueAfterLogin() {
+    const next = requestedNext();
+    if (next) {
+      window.location.assign(next);
+      return;
+    }
+
     const plan = requestedPlan();
     window.location.assign(plan ? `${GATHER_PATH}?plan=${plan}` : AFTER_LOGIN_PATH);
   }
@@ -264,7 +276,7 @@
       return;
     }
 
-    if (data.session && requestedPlan()) {
+    if (data.session && (requestedPlan() || requestedNext())) {
       continueAfterLogin();
       return;
     }

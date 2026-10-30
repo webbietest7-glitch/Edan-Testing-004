@@ -78,3 +78,15 @@ export async function getSignedInUser() {
   if (error) return null;
   return data.session?.user ?? null;
 }
+
+export function initializeStayPayment(bookingId) {
+  return callStayPayment({
+    action: "initialize",
+    booking_id: bookingId,
+    callback_url: `${window.location.origin}/stay/?stay_booking=${bookingId}`
+  });
+}
+
+export function verifyStayPayment(bookingId) {
+  return callStayPayment({ action: "verify", booking_id: bookingId });
+}
