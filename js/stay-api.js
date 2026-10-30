@@ -8,8 +8,11 @@ export async function fetchRoomAvailability(checkIn, checkOut) {
     p_check_out: checkOut
   });
 
-  if (error || !Array.isArray(data)) {
-    throw new Error("We couldn't check availability right now. Please try again.");
+  if (error) {
+    throw new Error(error.message || "The availability check failed with no details.");
+  }
+  if (!Array.isArray(data)) {
+    throw new Error("The availability check returned an unexpected response.");
   }
 
   return data
