@@ -208,6 +208,41 @@
 
         </form>
 
+        <!-- New password form (shown from a reset link) -->
+        <form id="recoveryForm" class="account__form" hidden>
+          <div class="account__field">
+            <label for="recoveryPassword">New password</label>
+
+            <input
+              type="password"
+              id="recoveryPassword"
+              name="password"
+              placeholder="At least 8 characters"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+          </div>
+
+          <div class="account__field">
+            <label for="recoveryConfirm">Confirm new password</label>
+
+            <input
+              type="password"
+              id="recoveryConfirm"
+              name="confirmPassword"
+              placeholder="Enter your new password again"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+          </div>
+
+          <button type="submit" class="account__submit">
+            Save new password <span aria-hidden="true">↗</span>
+          </button>
+        </form>
+
         <!-- Login/signup/reset feedback -->
         <p
           id="accountMessage"

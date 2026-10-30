@@ -147,6 +147,36 @@
           </button>
         </form>
 
+        <form id="recoveryForm" class="account__form" hidden>
+          <label>
+            New password
+            <input
+              type="password"
+              name="password"
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="At least 8 characters"
+              required
+            >
+          </label>
+
+          <label>
+            Confirm new password
+            <input
+              type="password"
+              name="confirmPassword"
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="Enter your new password again"
+              required
+            >
+          </label>
+
+          <button class="account__submit" type="submit">
+            Save new password <span aria-hidden="true">↗</span>
+          </button>
+        </form>
+
         <p class="account__message" id="accountMessage" role="status" aria-live="polite" hidden></p>
 
         <p class="account__switch" id="accountSwitch">

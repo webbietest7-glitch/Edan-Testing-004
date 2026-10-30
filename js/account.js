@@ -42,6 +42,8 @@
 
   const forgotButton = document.getElementById("forgotPassword");
   const switchToSignup = document.getElementById("switchToSignup");
+  const recoveryForm = document.getElementById("recoveryForm");
+  const isRecovery = new URLSearchParams(window.location.search).get("mode") === "recovery";
 
   function showMessage(text, type = "success") {
     message.textContent = text;
@@ -143,6 +145,20 @@
 
     const plan = requestedPlan();
     window.location.assign(plan ? `${GATHER_PATH}?plan=${plan}` : AFTER_LOGIN_PATH);
+  }
+
+  function showRecoveryForm() {
+    loginForm.hidden = true;
+    signupForm.hidden = true;
+    recoveryForm.hidden = false;
+
+    loginTab.closest(".account__tabs").hidden = true;
+    switchText.hidden = true;
+
+    title.textContent = "Choose a new password";
+    eyebrow.textContent = "ALMOST THERE";
+    description.textContent = "Enter a new password for your account.";
+    clearMessage();
   }
 
   loginTab.addEventListener("click", showLogin);
@@ -269,12 +285,55 @@
     }
   });
 
+  client.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") showRecoveryForm();
+  });
+
+  recoveryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearMessage();
+
+    const formData = new FormData(recoveryForm);
+    const password = String(formData.get("password") || "");
+    const confirmPassword = String(formData.get("confirmPassword") || "");
+
+    if (password !== confirmPassword) {
+      showMessage("Your passwords do not match.", "error");
+      return;
+    }
+
+    if (password.length < 8) {
+      showMessage("Your password must contain at least 8 characters.", "error");
+      return;
+    }
+
+    setBusy(recoveryForm, true);
+
+    try {
+      const { error } = await client.auth.updateUser({ password });
+
+      if (error) throw error;
+
+      showMessage("Your password has been updated. Taking you back to your stay…");
+      window.setTimeout(continueAfterLogin, 1000);
+    } catch (error) {
+      showMessage(
+        error.message || "We couldn't update your password. Please try again.",
+        "error"
+      );
+    } finally {
+      setBusy(recoveryForm, false);
+    }
+  });
+
   // If a guest already has a valid session, don't show the login form.
   client.auth.getSession().then(({ data, error }) => {
     if (error) {
       console.error("Could not check the current session:", error.message);
       return;
     }
+
+    if (isRecovery) return;
 
     if (data.session && (requestedPlan() || requestedNext())) {
       continueAfterLogin();
@@ -308,11 +367,6 @@
     showMessage(
       params.get("error_description").replace(/\+/g, " "),
       "error"
-    );
-  } else if (params.get("mode") === "recovery") {
-    showMessage(
-      "Open the password-reset link from your email. The form for choosing a new password still needs to be added.",
-      "success"
     );
   } else if (window.location.hash.includes("access_token")) {
     showMessage(

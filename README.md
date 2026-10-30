@@ -143,7 +143,7 @@ Paths are relative to the site root.
 - Both pages run `js/account.js`.
 - **Sign up:** name, email, password (at least 8 characters, entered twice). Creates a Supabase account and sends a confirmation email.
 - **Sign in:** email and password. Redirects to the membership page if a plan was chosen, or to the stay page otherwise.
-- **Forgot password:** sends a reset email that returns to `/login/?mode=recovery`. The new-password form is not built yet.
+- **Forgot password:** sends a reset email that returns to `/login/?mode=recovery`. That page then shows a "Choose a new password" form. The email is only sent if the address has an account in the connected Supabase project (Authentication, Users). Supabase does not say so on screen for unknown addresses.
 - The `?plan=monthly` or `?plan=annual` parameter carries the chosen plan through sign-in to the Gather page.
 - The `?next=` parameter sends the guest back after sign-in. Only paths under `/stay/` are accepted.
 
