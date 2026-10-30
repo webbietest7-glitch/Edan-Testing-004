@@ -191,10 +191,13 @@ Known issue: the sign-up form on `/account/` does not match the script (it has n
 
 ### Members (`/members/`)
 - Requires a session. Without one, the visitor is sent to `/account/?next=members`.
-- Shows the member's tier and status. Benefits sections are hidden unless the membership is active and not expired (`js/members.js`).
-- The annual section is shown to monthly members as a teaser, and the annual features only to annual members.
+- Shows the member's tier and status. Member sections are hidden unless the membership is active and not expired (`js/members.js`).
+- The page has five sections, in this order: 01 Community (chat), 02 In Process (behind the scenes photo), 03 Gather (monthly gatherings), 04 Annual Members bonus videos, 05 Annual Members appointments.
+- Sections 04 and 05 are for annual members only. Monthly members see a locked note in their place.
+- Gatherings (`member_gatherings`) and bonus videos (`member_bonus_videos`) are loaded from the database (`js/members-content.js`). Each has a title, description, sort order, and optional image, link, or video path. Video files go in the `videos/members/` folder of the repository or the `site-videos` storage bucket.
+- Admins manage gatherings and bonus videos directly in the database for now. A dashboard screen for these is not built yet.
 - **Receipt:** if the member has a successful payment, a "Download receipt (PDF)" button appears. It calls the `payment-receipt` Edge Function for the most recent successful payment.
-- **Community chat:** a realtime message board for active members (`js/members-chat.js`). Members pick a username (3 to 24 letters, numbers or underscores), then post messages of up to 1000 characters. New messages appear live. Chat access is checked in the browser only.
+- **Community chat:** a realtime message board for active members (`js/members-chat.js`). Members pick a username (3 to 24 letters, numbers or underscores), then post messages of up to 1000 characters. New messages appear live. Chat access is enforced by the database (`member_chat_messages` policies use `is_active_member`).
 
 ### Dashboard (`/dashboard/`), admin only
 - Shows the team dashboard: totals for members, homepage video views and video uploads.
@@ -279,17 +282,23 @@ Payment never approves a membership. An admin still reviews the application and 
 | `stay_bookings` | Stay reservations, holds and payments | Own bookings (guests); admins | Server (online bookings); admins (manual bookings, status changes) |
 | `stay_room_blocks` | Dates a room is closed | Admins | Admins |
 | `stay_payment_events` | Stay webhook log | Nobody from the client | Server only |
+| `member_chat_profiles` | Chat usernames | Signed-in members | Own row only, active members |
+| `member_chat_messages` | Community chat messages (realtime) | Active members (`is_active_member`) | Own messages, active members |
+| `member_gatherings` | Monthly gatherings shown in section 03 | Active members | Admins |
+| `member_bonus_videos` | Annual bonus videos shown in section 04 | Annual members | Admins |
 | `video_views` | Homepage video plays | Admins | Anyone (insert only) |
 | `video_uploads` | Admin video upload log | Admins | Admins |
 | `site-videos` (bucket) | Homepage video file | Public | Admins |
 
-Functions: `is_edan_admin`, `approve_membership_application`, `reject_membership_application` (admins), `record_paystack_event` (server only).
+Functions: `is_edan_admin`, `approve_membership_application`, `reject_membership_application` (admins), `record_paystack_event` (server only), `is_active_member(tiers)` (checks the signed-in user's own membership tier and status, used by the member tables' access rules).
+
+Member content access is enforced in the database. Gatherings are readable by active members of either tier. Bonus videos are readable only by active annual members. Appointment booking is not built yet, so section 05 shows a disabled button.
 
 Stay functions: `stay_room_availability` (anyone), `create_stay_hold` and `get_own_stay_confirmation` (signed-in guests, own bookings only), `admin_create_manual_booking`, `admin_block_room`, `admin_set_booking_status` and `admin_check_in_booking` (admins; check-in is recorded in `stay_bookings.checked_in_at`), and `prepare_stay_payment`, `confirm_stay_payment` and `mark_stay_payment_failed` (server only).
 
 Stay rooms are data, not schema. Migrations create the tables only. The five sample rooms named `001` to `005` were added directly in the database for testing. On a fresh project, add rooms from the Dashboard (Rooms and blocked dates) or with an SQL insert into `stay_rooms`.
 
-Tables `member_chat_messages` and `member_chat_profiles` are used by the chat, but no migration in this repository creates them. Create them before enabling the chat on a new project.
+The member chat tables (`member_chat_messages`, `member_chat_profiles`) and the Members content tables were created directly in the database by a migration named `members_community_gatherings_and_bonus_videos`. That migration file is not yet in `supabase/migrations/`, so a new project built from the repository alone will be missing these tables. Add the matching file to the repository before using the project for a fresh deployment.
 
 ---
 

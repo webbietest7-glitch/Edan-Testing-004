@@ -16,8 +16,9 @@
   const intro = document.getElementById("memberIntro");
   const tierLabel = document.getElementById("memberTier");
   const statusLabel = document.getElementById("memberStatus");
-  const annualSection = document.getElementById("annual-content");
   const annualLocked = document.getElementById("annualLocked");
+  const memberBlocks = document.querySelectorAll(".members__block, .members__privileges");
+  const annualBlocks = document.querySelectorAll(".members__block--annual");
   const logoutButton = document.getElementById("memberLogout");
   const receiptPanel = document.getElementById("receiptPanel");
   const downloadButton = document.getElementById("downloadReceipt");
@@ -44,13 +45,9 @@
       intro.textContent =
         "Your account is ready. Your membership is awaiting activation or renewal by the Ɛdan team.";
 
-      // Hide all member benefits until the membership is active.
-      document.querySelectorAll(
-        ".members__section, .members__annual, .members__privileges, .members__placeholder"
-      ).forEach(section => {
-        section.hidden = true;
+      memberBlocks.forEach(block => {
+        block.hidden = true;
       });
-      annualSection.hidden = true;
       annualLocked.hidden = true;
       return;
     }
@@ -58,24 +55,14 @@
     intro.textContent =
       `Your ${tier} membership is active. Welcome to your Ɛdan member space.`;
 
-    document.querySelectorAll(
-      ".members__section, .members__annual, .members__privileges, .members__placeholder"
-    ).forEach(section => {
-      section.hidden = false;
+    memberBlocks.forEach(block => {
+      block.hidden = false;
     });
 
     const isAnnual = tier === "annual";
-
-    // Keep the annual introduction visible to active monthly members.
-    // Only annual members can see the actual annual benefits.
-    annualSection.hidden = false;
-
-    annualSection.querySelectorAll(
-    ".members__annual-feature"
-    ).forEach(feature => {
-    feature.hidden = !isAnnual;
+    annualBlocks.forEach(block => {
+      block.hidden = !isAnnual;
     });
-
     annualLocked.hidden = isAnnual;
   }
 
