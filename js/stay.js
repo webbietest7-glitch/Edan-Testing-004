@@ -3,7 +3,6 @@ import { createStayCheckout } from "./stay-checkout.js";
 
 const DRAFT_KEY = "edanStayBookingDraft";
 const LOGIN_RETURN_PATH = "/stay/?resume=1";
-const BOOKING_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 (() => {
   const modal = document.getElementById("stayBookingModal");
@@ -55,7 +54,6 @@ const BOOKING_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
     statusText: document.getElementById("stayStatusText"),
     statusAction: document.getElementById("stayStatusAction"),
     showStep,
-    closeModal: () => modal.close(),
     formatMoney: (amount) => money.format(amount)
   });
 
@@ -360,14 +358,9 @@ const BOOKING_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
     }
   });
 
-  const params = new URLSearchParams(window.location.search);
-  const returnedBookingId = params.get("stay_booking");
-  const draft = params.get("resume") === "1" ? restoreDraft() : null;
+  const draft = new URLSearchParams(window.location.search).get("resume") === "1" ? restoreDraft() : null;
 
-  if (returnedBookingId && BOOKING_ID_PATTERN.test(returnedBookingId)) {
-    modal.showModal();
-    checkout.checkStatus(returnedBookingId);
-  } else if (draft) {
+  if (draft) {
     resumeAfterLogin(draft);
   }
 

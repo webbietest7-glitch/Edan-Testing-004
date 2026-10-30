@@ -1,19 +1,5 @@
-import {
-  createBookingHold,
-  fetchBookingStatus,
-  initializeStayPayment,
-  verifyStayPayment
-} from "./stay-api.js";
-
-const dateFormat = new Intl.DateTimeFormat("en-GH", {
-  day: "numeric",
-  month: "long",
-  year: "numeric"
-});
-
-function formatDate(isoDate) {
-  return dateFormat.format(new Date(`${isoDate}T12:00:00`));
-}
+import { createBookingHold, initializeStayPayment } from "./stay-api.js";
+import { formatStayDate } from "./stay-format.js";
 
 export function createStayCheckout(elements) {
   const {
@@ -30,7 +16,6 @@ export function createStayCheckout(elements) {
     statusText,
     statusAction,
     showStep,
-    closeModal,
     formatMoney
   } = elements;
 
@@ -59,6 +44,11 @@ export function createStayCheckout(elements) {
     statusAction.onclick = action ? action.onClick : null;
   }
 
+  function showConfirmation(bookingId) {
+    setStatus("Payment received", "Opening your booking confirmation…", null);
+    window.location.assign(`/stay/confirmation.html?stay_booking=${bookingId}`);
+  }
+
   function openCheckoutWindow(accessCode, bookingId) {
     if (!window.PaystackPop) {
       setStatus(
@@ -77,7 +67,7 @@ export function createStayCheckout(elements) {
 
     const popup = new window.PaystackPop();
     popup.resumeTransaction(accessCode, {
-      onSuccess: () => checkStatus(bookingId),
+      onSuccess: () => showConfirmation(bookingId),
       onCancel: () => setStatus(
         "Payment not completed",
         "Your room is still held for a short time. Continue to pay to finish your booking.",
@@ -110,59 +100,11 @@ export function createStayCheckout(elements) {
     }
   }
 
-  function describeBooking(booking) {
-    const reference = `Booking reference ${booking.booking_reference}.`;
-
-    if (booking.status === "confirmed") {
-      return {
-        title: "Your stay is confirmed",
-        text: `${reference} Check-in ${formatDate(booking.check_in)} from 3:00 PM, check-out ${formatDate(booking.check_out)} by 11:00 AM. Total paid ${formatMoney(booking.total_ghs)}.`,
-        action: { label: "Close", onClick: closeModal }
-      };
-    }
-
-    if (booking.status === "pending_payment") {
-      return {
-        title: "Payment not confirmed yet",
-        text: `${reference} We haven't received confirmation from Paystack yet. Wait a moment, then check again.`,
-        action: { label: "Check again", onClick: () => checkStatus(booking.id) }
-      };
-    }
-
-    return {
-      title: "This booking didn't go through",
-      text: `${reference} The payment wasn't completed, so the room has been released. Choose your dates again to book.`,
-      action: { label: "Choose dates", onClick: () => showStep("dates") }
-    };
-  }
-
-  async function checkStatus(bookingId) {
-    showStep("status");
-    setStatus("Checking your payment", "This only takes a moment.", null);
-
-    try {
-      await verifyStayPayment(bookingId);
-      const booking = await fetchBookingStatus(bookingId);
-      if (!booking) {
-        throw new Error("We couldn't find this booking on your account.");
-      }
-
-      const { title, text, action } = describeBooking(booking);
-      setStatus(title, text, action);
-    } catch (error) {
-      setStatus(
-        "We couldn't check your booking",
-        error.message,
-        { label: "Check again", onClick: () => checkStatus(bookingId) }
-      );
-    }
-  }
-
   function openDetails(nextSelection, user) {
     selection = nextSelection;
 
     roomOutput.textContent = selection.room.name;
-    datesOutput.textContent = `${formatDate(selection.checkIn)} to ${formatDate(selection.checkOut)}`;
+    datesOutput.textContent = `${formatStayDate(selection.checkIn)} to ${formatStayDate(selection.checkOut)}`;
     totalOutput.textContent = `${formatMoney(selection.total)} for ${selection.nights} ${selection.nights === 1 ? "night" : "nights"}`;
 
     nameInput.value = user?.user_metadata?.full_name ?? "";
@@ -210,5 +152,5 @@ export function createStayCheckout(elements) {
     }
   });
 
-  return { openDetails, checkStatus };
+  return { openDetails };
 }

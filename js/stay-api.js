@@ -59,18 +59,19 @@ export async function callStayPayment(payload) {
   return data;
 }
 
-export async function fetchBookingStatus(bookingId) {
-  const { data, error } = await supabase
-    .from("stay_bookings")
-    .select("id, booking_reference, status, check_in, check_out, total_ghs, guests")
-    .eq("id", bookingId)
-    .maybeSingle();
+export async function fetchStayConfirmation(bookingId) {
+  const { data, error } = await supabase.rpc("get_own_stay_confirmation", { p_booking_id: bookingId });
 
-  if (error) {
+  if (error || !Array.isArray(data)) {
     throw new Error("We couldn't load your booking. Please try again.");
   }
 
-  return data;
+  const booking = data[0] ?? null;
+  if (booking && typeof booking.status !== "string") {
+    throw new Error("We couldn't load your booking. Please try again.");
+  }
+
+  return booking;
 }
 
 export async function getSignedInUser() {
@@ -83,7 +84,7 @@ export function initializeStayPayment(bookingId) {
   return callStayPayment({
     action: "initialize",
     booking_id: bookingId,
-    callback_url: `${window.location.origin}/stay/?stay_booking=${bookingId}`
+    callback_url: `${window.location.origin}/stay/confirmation.html?stay_booking=${bookingId}`
   });
 }
 

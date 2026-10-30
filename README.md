@@ -117,7 +117,13 @@ Known issue: the sign-up form on `/account/` does not match the script (it has n
 - The dialog shows nights times the rate for display (rates are also set in the script). The database sets the price that is actually charged. Check-in cannot be in the past.
 - Guests check live availability, pick a free room, enter their details and pay through the Paystack checkout window (section 5.6). A chosen room is kept in the browser's session storage only while the guest signs in, then cleared when the selection resumes.
 - The booking status panel also opens when Paystack returns the guest to `/stay/?stay_booking=...`.
-- Scripts: `js/stay.js` (dates and room list), `js/stay-checkout.js` (guest details, payment and status), `js/stay-api.js` (calls to the database and Edge Functions). Paystack's inline checkout script is loaded on the page.
+- Scripts: `js/stay.js` (dates and room list), `js/stay-checkout.js` (guest details and payment), `js/stay-api.js` (calls to the database and Edge Functions). Paystack's inline checkout script is loaded on the page.
+
+### Stay confirmation (`/stay/confirmation.html`)
+- Shown after a successful payment, and at the Paystack callback address. It checks the payment with Paystack, then shows the booking details and a payment receipt (amount paid, date and time paid, Paystack reference). Guests can print the receipt.
+- Only the booking's own guest can see it. If the guest is signed out, the page asks them to sign in first and returns them here.
+- Pending or failed bookings show a status message instead of a receipt.
+- Scripts: `js/stay-confirmation.js`, `js/stay-format.js`, `css/pages/stay-confirmation.css`.
 
 ### Eat (`/eat/`)
 - Café menu with category filters, a featured carousel and a basket.
@@ -212,7 +218,7 @@ Payment never approves a membership. An admin still reviews the application and 
 5. `js/stay-checkout.js` opens Paystack's checkout window on the page with that access code. If the window is closed, Continue to payment reopens it while the hold lasts.
 6. Paystack sends `charge.success` to `stay-paystack-webhook`. The webhook checks the HMAC-SHA512 signature, logs the event in `stay_payment_events` (repeats are harmless), verifies the transaction with Paystack, and calls `confirm_stay_payment`. That function confirms the booking only if the reference, amount (total x 100 pesewas), currency and dates still match.
 7. If the amount or currency does not match, or a date conflict appears, the booking is cancelled and marked Refund required. No refund is issued automatically; an admin must refund it.
-8. After a successful checkout window, the page asks `stay-payment` (action `verify`) to check with Paystack directly, so the guest sees the result without waiting for the webhook. The same check runs for `/stay/?stay_booking=...`.
+8. After a successful checkout window, the guest is taken to `/stay/confirmation.html?stay_booking=...`. That page asks `stay-payment` (action `verify`) to check with Paystack directly, so the guest sees the result without waiting for the webhook. It then loads the booking through `get_own_stay_confirmation` and shows the receipt.
 9. A hold that is not paid within 15 minutes becomes `payment_failed` and releases the room.
 
 ---
@@ -236,7 +242,7 @@ Payment never approves a membership. An admin still reviews the application and 
 
 Functions: `is_edan_admin`, `approve_membership_application`, `reject_membership_application` (admins), `record_paystack_event` (server only).
 
-Stay functions: `stay_room_availability` (anyone), `create_stay_hold` (signed-in guests), `admin_create_manual_booking`, `admin_block_room`, `admin_set_booking_status` and `admin_check_in_booking` (admins; check-in is recorded in `stay_bookings.checked_in_at`), and `prepare_stay_payment`, `confirm_stay_payment` and `mark_stay_payment_failed` (server only).
+Stay functions: `stay_room_availability` (anyone), `create_stay_hold` and `get_own_stay_confirmation` (signed-in guests, own bookings only), `admin_create_manual_booking`, `admin_block_room`, `admin_set_booking_status` and `admin_check_in_booking` (admins; check-in is recorded in `stay_bookings.checked_in_at`), and `prepare_stay_payment`, `confirm_stay_payment` and `mark_stay_payment_failed` (server only).
 
 Tables `member_chat_messages` and `member_chat_profiles` are used by the chat, but no migration in this repository creates them. Create them before enabling the chat on a new project.
 
