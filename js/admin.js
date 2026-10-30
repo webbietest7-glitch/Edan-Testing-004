@@ -186,14 +186,14 @@ logoutButton.addEventListener("click", async () => {
     return;
   }
 
-  window.location.replace("../account/");
+  window.location.replace("../login/");
 });
 
 async function init() {
   const { data, error } = await supabase.auth.getSession();
 
   if (error || !data.session) {
-    window.location.replace("../account/?next=admin");
+    window.location.replace("../login/?next=admin");
     return;
   }
 

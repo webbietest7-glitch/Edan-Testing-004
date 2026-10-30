@@ -140,19 +140,20 @@ Paths are relative to the site root.
 - `js/behind-scenes.js` runs decorative sketch animations when sections scroll into view.
 - Static content, no backend.
 
-### Account (`/account/`) and Login (`/login/`)
-- Both pages run `js/account.js`.
+### Login (`/login/`)
+- The live sign-in page. The older `/account/` page still exists and runs the same script, but nothing on the site links to it anymore.
+- Password reset emails return here, and the page then shows a "Choose a new password" form.
 - **Sign up:** name, email, password (at least 8 characters, entered twice). Creates a Supabase account and sends a confirmation email.
 - **Sign in:** email and password. Redirects to the membership page if a plan was chosen, or to the stay page otherwise.
 - **Forgot password:** sends a reset email that returns to `/login/?mode=recovery`. That page then shows a "Choose a new password" form. The email is only sent if the address has an account in the connected Supabase project (Authentication, Users). Supabase does not say so on screen for unknown addresses.
 - The `?plan=monthly` or `?plan=annual` parameter carries the chosen plan through sign-in to the Gather page.
 - The `?next=` parameter sends the guest back after sign-in. Only paths under `/stay/` are accepted.
 
-Known issue: the sign-up form on `/account/` does not match the script (it has no confirm-password field and uses a different name field), so sign-up there always reports that the passwords do not match. The same form on `/login/` works.
+The older `/account/` page's sign-up form does not match its script (no confirm-password field, different name field), so sign-up there always fails. Use `/login/`.
 
 ### Gather (`/gather/`): membership
 - Shows two plans: Monthly (GH₵1000 per month) and Annual (GH₵8000 per year).
-- Clicking a plan without a session sends the visitor to `/account/?plan=...`. Clicking with a session opens the application dialog.
+- Clicking a plan without a session sends the visitor to `/login/?plan=...`. Clicking with a session opens the application dialog.
 - Payment flow: see section 7.1.
 - Scripts: `js/gather.js`, Paystack's inline checkout script.
 
@@ -191,7 +192,7 @@ Known issue: the sign-up form on `/account/` does not match the script (it has n
 - Script: `js/contact.js`.
 
 ### Members (`/members/`)
-- Requires a session. Without one, the visitor is sent to `/account/?next=members`.
+- Requires a session. Without one, the visitor is sent to `/login/?next=members` and returns here after signing in.
 - Shows the member's tier and status. Member sections are hidden unless the membership is active and not expired (`js/members.js`).
 - The page has five sections, in this order: 01 Community (chat), 02 In Process (behind the scenes photo), 03 Gather (monthly gatherings), 04 Annual Members bonus videos, 05 Annual Members appointments.
 - Sections 04 and 05 are for annual members only. Monthly members see a locked note in their place.
@@ -351,7 +352,7 @@ If availability shows an error, the message names the exact problem. A "Could no
 
 - Paystack public key is a placeholder, so online membership payment is disabled.
 - `payment_transactions` rows are not created anywhere, so membership payments cannot be recorded (see 7.1).
-- Sign-up on `/account/` mismatches its script.
+- The older `/account/` page is still reachable, and its sign-up form does not match its script. It should be removed or redirected to `/login/`.
 - Labs script throws an error on load (see the Labs section).
 - Stay page links to `about.html`, `eat.html` and `labs.html` point to non-existent paths under `/stay/`.
 - Eat checkout does not send orders to any backend.

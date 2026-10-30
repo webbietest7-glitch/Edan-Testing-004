@@ -147,7 +147,7 @@
       await client.auth.getSession();
 
     if (sessionError || !sessionData.session) {
-      window.location.replace("../account/?next=members");
+      window.location.replace("../login/?next=members");
       return;
     }
 
@@ -208,7 +208,7 @@
       return;
     }
 
-    window.location.replace("account.html");
+    window.location.replace("../");
   });
 
   init().catch(error => {

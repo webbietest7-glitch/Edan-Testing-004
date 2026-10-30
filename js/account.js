@@ -15,6 +15,10 @@
   const GATHER_PATH = "/gather/";
   const PLAN_IDS = ["monthly", "annual"];
   const STAY_PATH_PREFIX = "/stay/";
+  const NEXT_ALIASES = new Map([
+    ["members", "/members/"],
+    ["admin", "/dashboard/"]
+  ]);
 
   if (
     SUPABASE_URL.startsWith("YOUR_") ||
@@ -133,6 +137,7 @@
 
   function requestedNext() {
     const next = new URLSearchParams(window.location.search).get("next");
+    if (NEXT_ALIASES.has(next)) return NEXT_ALIASES.get(next);
     return next && next.startsWith(STAY_PATH_PREFIX) ? next : null;
   }
 

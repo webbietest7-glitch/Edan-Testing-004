@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 
 const PAYSTACK_PUBLIC_KEY = "pk_test_41f2f237f5c3ece88a2e4873079e1bb0ceb70ed4";
-const ACCOUNT_PATH = "/account/";
+const ACCOUNT_PATH = "/login/";
 const PLANS = {
   monthly: { label: "Monthly affiliate", amountGhs: 1000 },
   annual: { label: "Annual affiliate", amountGhs: 8000 },
