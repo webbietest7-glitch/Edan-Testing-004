@@ -6,8 +6,8 @@
   if (!links || !toggle) return;
 
   // ---- settings ----
-  const SUPABASE_URL = "https://ayjyvuulgqobppyvroyl.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_qJXFQXVMZnEum0BUqGlR6g_VOCtzkgm";
+  const SUPABASE_URL = "https://qavarsxjqxogfilpgyxn.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhdmFyc3hqcXhvZ2ZpbHBneXhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNDkzMTUsImV4cCI6MjEwODkyNTMxNX0.1tKvqzcirTrYoSsZmxdNykmIzQP_wu_XsjRT1lq8zEs";
   const LOGIN_HREF = '../login/';                             
   const MEMBER_HREF = '../members/';                          
   const ADMIN_HREF = '../dashboard/';                         
