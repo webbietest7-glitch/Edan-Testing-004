@@ -352,13 +352,6 @@
             </select>
           </label>
 
-          <label class="stay-modal__field">
-            <span>Room</span>
-            <select id="stayRoom" required>
-              <option value="stay">Stay at Ɛdan</option>
-            </select>
-          </label>
-
         </div>
 
         <fieldset class="stay-modal__breakfast">
@@ -397,6 +390,8 @@
           Check availability
         </button>
 
+        <div class="stay-results" id="stayResults" aria-live="polite" hidden></div>
+
         <p class="stay-modal__footnote">
           Your dates are not reserved until availability is verified
           and your booking is confirmed.
@@ -410,8 +405,9 @@
 
 <!-- ============ FOOTER ============ -->
   <div data-include="../partials/nav-footer.html"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/include.js"></script>
-  <script src="../js/stay.js"></script>
+  <script type="module" src="../js/stay.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/nav.js"></script>
 </body>

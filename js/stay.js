@@ -1,3 +1,4 @@
+import { fetchRoomAvailability } from "./stay-api.js";
 
 (() => {
   const modal = document.getElementById("stayBookingModal");
@@ -12,10 +13,17 @@
   const nightCount = document.getElementById("stayNightCount");
   const totalOutput = document.getElementById("stayTotal");
   const errorOutput = document.getElementById("stayBookingError");
+  const resultsOutput = document.getElementById("stayResults");
+  const submitButton = form.querySelector('[type="submit"]');
 
   const rates = {
     room: 650,
     breakfast: 700
+  };
+
+  const rateLabels = {
+    room: "Room only",
+    breakfast: "With breakfast"
   };
 
   const money = new Intl.NumberFormat("en-GH", {
@@ -23,6 +31,8 @@
     currency: "GHS",
     maximumFractionDigits: 0
   });
+
+  let availabilityRequest = 0;
 
   function localDateString(date) {
     const year = date.getFullYear();
@@ -70,6 +80,63 @@
     errorOutput.hidden = true;
   }
 
+  function clearResults() {
+    availabilityRequest += 1;
+    resultsOutput.replaceChildren();
+    resultsOutput.hidden = true;
+  }
+
+  function setChecking(isChecking) {
+    submitButton.disabled = isChecking;
+    submitButton.textContent = isChecking ? "Checking availability…" : "Check availability";
+  }
+
+  function renderMessage(text) {
+    const paragraph = document.createElement("p");
+    paragraph.className = "stay-results__message";
+    paragraph.textContent = text;
+    resultsOutput.replaceChildren(paragraph);
+    resultsOutput.hidden = false;
+  }
+
+  function renderRooms(rooms, nights, rate) {
+    const total = nights * rates[rate];
+    const nightsLabel = `${nights} ${nights === 1 ? "night" : "nights"}`;
+
+    const title = document.createElement("h3");
+    title.className = "stay-results__title";
+    title.textContent = rooms.length === 1
+      ? "1 room is free for your dates"
+      : `${rooms.length} rooms are free for your dates`;
+
+    const list = document.createElement("ul");
+    list.className = "stay-results__list";
+
+    rooms.forEach((room) => {
+      const item = document.createElement("li");
+      item.className = "stay-results__item";
+
+      const copy = document.createElement("div");
+
+      const name = document.createElement("strong");
+      name.textContent = room.name;
+
+      const detail = document.createElement("small");
+      detail.textContent = `${rateLabels[rate]} · ${nightsLabel}`;
+
+      const price = document.createElement("span");
+      price.className = "stay-results__price";
+      price.textContent = money.format(total);
+
+      copy.append(name, detail);
+      item.append(copy, price);
+      list.append(item);
+    });
+
+    resultsOutput.replaceChildren(title, list);
+    resultsOutput.hidden = false;
+  }
+
   function updateCheckoutMinimum() {
     if (!checkIn.value) return;
 
@@ -92,6 +159,7 @@
   document.querySelectorAll(".stay-book-trigger").forEach((button) => {
     button.addEventListener("click", () => {
       clearError();
+      clearResults();
 
       const todayValue = localDateString(new Date());
       checkIn.min = todayValue;
@@ -110,19 +178,28 @@
     button.addEventListener("click", () => modal.close());
   });
 
-  checkIn.addEventListener("change", updateCheckoutMinimum);
-  checkOut.addEventListener("change", updateSummary);
+  checkIn.addEventListener("change", () => {
+    clearResults();
+    updateCheckoutMinimum();
+  });
+  checkOut.addEventListener("change", () => {
+    clearResults();
+    updateSummary();
+  });
   guests.addEventListener("change", clearError);
 
   rateInputs.forEach((input) => {
-    input.addEventListener("change", updateSummary);
+    input.addEventListener("change", () => {
+      clearResults();
+      updateSummary();
+    });
   });
 
   modal.addEventListener("click", (event) => {
     if (event.target === modal) modal.close();
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearError();
 
@@ -138,34 +215,27 @@
       return;
     }
 
-    const bookingDraft = {
-      room: document.getElementById("stayRoom").value,
-      checkIn: checkIn.value,
-      checkOut: checkOut.value,
-      guests: Number(guests.value),
-      rate: selectedRate(),
-      nights,
-      pricePerNight: rates[selectedRate()],
-      estimatedTotal: nights * rates[selectedRate()],
-      currency: "GHS"
-    };
+    const rate = selectedRate();
+    const request = ++availabilityRequest;
 
-    // Frontend demonstration only.
-    // A real implementation must securely preserve this booking
-    // through the account/login flow using a backend.
+    setChecking(true);
+
     try {
-      sessionStorage.setItem(
-        "edanStayBookingDraft",
-        JSON.stringify(bookingDraft)
-      );
-    } catch {
-      showError("Your browser couldn't save this selection. Please try again.");
-      return;
-    }
+      const rooms = await fetchRoomAvailability(checkIn.value, checkOut.value);
+      if (request !== availabilityRequest) return;
 
-    showError(
-      "Your dates and estimated total are ready. Account creation, real availability checks and payment need to be connected before booking can continue."
-    );
+      if (rooms.length === 0) {
+        renderMessage("Sorry, no rooms are free for these dates. Try different dates.");
+      } else {
+        renderRooms(rooms, nights, rate);
+      }
+    } catch (error) {
+      if (request !== availabilityRequest) return;
+      clearResults();
+      showError(error.message);
+    } finally {
+      if (request === availabilityRequest) setChecking(false);
+    }
   });
 
   updateSummary();
