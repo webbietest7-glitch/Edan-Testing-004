@@ -1,0 +1,358 @@
+/* =========================================
+   ƐDAN — TEAM DASHBOARD
+   Uses the shared Ɛdan tokens from css/tokens.css and css/base.css
+   ========================================= */
+
+.page-admin {
+  --admin-line: rgba(50, 45, 38, .18);
+  --admin-soft: #55503F;
+
+  background: var(--cotton);
+  color: var(--ink);
+}
+
+.admin {
+  width: min(1200px, 90%);
+  margin-inline: auto;
+  padding: 24px 0 96px;
+}
+
+/* Header */
+
+.admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin__brand {
+  font-family: var(--nav-serif);
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.admin__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .3s var(--ease), color .3s var(--ease), opacity .3s var(--ease);
+}
+
+.admin__button:hover {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.admin__button--solid {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.admin__button--solid:hover {
+  background: var(--clay);
+  border-color: var(--clay);
+}
+
+.admin__button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+/* Intro */
+
+.admin__intro {
+  padding: clamp(48px, 7vw, 88px) 0 48px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin__intro h1 {
+  margin: 16px 0 16px;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.admin__intro h1 em {
+  color: var(--clay);
+  font-weight: 400;
+}
+
+.admin__intro #adminMessage {
+  max-width: 560px;
+  color: var(--admin-soft);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.admin__intro #adminMessage.admin__message--error {
+  color: var(--clay);
+}
+
+/* Cards */
+
+.admin__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+  align-items: start;
+}
+
+.admin__card {
+  padding: 32px;
+  background: var(--cream);
+  border: 1px solid var(--admin-line);
+  border-radius: 4px;
+}
+
+.admin__card--full {
+  grid-column: 1 / -1;
+}
+
+.admin__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.admin__stat {
+  padding: 24px 32px;
+  background: var(--cream);
+  border: 1px solid var(--admin-line);
+  border-radius: 4px;
+}
+
+.admin__stat-value {
+  margin-top: 8px;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--clay);
+}
+
+.admin__table-wrap {
+  overflow-x: auto;
+}
+
+.admin__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin__table th,
+.admin__table td {
+  padding: 16px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--admin-line);
+  white-space: nowrap;
+}
+
+.admin__table th {
+  font-weight: 500;
+  color: var(--admin-soft);
+}
+
+.admin__table-empty {
+  color: var(--admin-soft);
+  text-align: center !important;
+}
+
+.admin__card h2 {
+  margin: 8px 0 8px;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.admin__hint {
+  margin-bottom: 24px;
+  color: var(--admin-soft);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.admin__card .admin__button {
+  margin-top: 8px;
+}
+
+/* Video preview */
+
+.admin__frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 24px;
+  background: var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin__frame-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--cream);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Upload form */
+
+.admin__upload {
+  display: grid;
+  gap: 16px;
+}
+
+.admin__label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.admin__file {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--admin-line);
+  border-radius: 4px;
+  background: var(--cotton);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.admin__file:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+
+.admin__restricted {
+  padding: clamp(48px, 7vw, 88px) 0;
+}
+
+.admin__restricted h2 {
+  margin: 16px 0 16px;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.admin__restricted h2 em {
+  color: var(--clay);
+  font-weight: 400;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .admin__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin__button--small {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.admin__button--danger {
+  border-color: var(--clay);
+  color: var(--clay);
+}
+
+.admin__button--danger:hover {
+  background: var(--clay);
+  color: var(--cream);
+}
+
+.admin__dialog {
+  width: min(520px, 90%);
+  padding: 32px;
+  background: var(--cream);
+  color: var(--ink);
+  border: 1px solid var(--admin-line);
+  border-radius: 4px;
+}
+
+.admin__dialog::backdrop {
+  background: rgba(31, 25, 19, .5);
+}
+
+.admin__dialog h2 {
+  margin: 8px 0 8px;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.admin__review {
+  display: grid;
+  gap: 16px;
+}
+
+.admin__review-error {
+  color: var(--clay);
+  font-size: 14px;
+}
+
+.admin__review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .admin__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin__card {
+    padding: 24px;
+  }
+}

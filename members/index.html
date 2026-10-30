@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F2EAD9">
+  <title>Members — Ɛdan</title>
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/footer.css">
+  <link rel="stylesheet" href="../css/pages/members.css">
+</head>
+<body class="page-members">
+    <header class="site-nav" id="siteNav">
+    <a href="../" class="nav-logo">
+      <span>Ɛdan</span>
+
+      
+    </a>
+
+    <button
+      class="nav-toggle"
+      id="navToggle"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="navLinks"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="../">Home</a>
+      <a href="../labs/">Labs</a>
+      <a href="../gather/">Gather</a>
+      <a href="../stay/">Stay</a>
+      <a href="../eat/">Eat</a>
+      <a href="../grow/">Grow</a>
+      <a href="../about/">Who we are</a>
+      <a href="../contact/">Contact</a>
+    </nav>
+
+    <p class="nav-note" aria-hidden="true">
+      A space for<br>people &amp; ideas
+    </p>
+  </header>
+  <main class="members">
+
+    <section class="members__hero">
+      <img
+        src="../images/house-two-storey.jpg"
+        alt="The house at Ɛdan"
+      >
+      <div class="members__hero-copy">
+        <span class="members__eyebrow">A closer circle</span>
+        <h1>A little closer<br>to <em>Ɛdan.</em></h1>
+        <p>A space to connect, discover, and be part of what grows here.</p>
+      </div>
+    </section>
+    
+    <!-- MEMBER WELCOME -->
+    <section class="members__welcome">
+      <div class="members__welcome-copy">
+        <span class="members__eyebrow">YOUR PLACE AT ƐDAN</span>
+        <h2 id="memberGreeting">Welcome to <em>Ɛdan.</em></h2>
+        <p id="memberIntro">Checking your membership...</p>
+      </div>
+
+      <div class="members__status" aria-live="polite">
+        <span class="members__status-label">YOUR MEMBERSHIP</span>
+        <span id="memberTier">Loading tier</span>
+        <span id="memberStatus">Checking status</span>
+      </div>
+      <div class="members__receipt" id="receiptPanel" hidden>
+        <span class="members__status-label">PAYMENT RECEIPT</span>
+        <button class="members__receipt-button" id="downloadReceipt" type="button">
+          Download receipt (PDF) <span aria-hidden="true">↗</span>
+        </button>
+        <p class="members__receipt-note" id="receiptMessage" role="status" aria-live="polite"></p>
+      </div>
+      <span class="members__welcome-mark" aria-hidden="true">Ɛ</span>
+    </section>
+
+    <!-- SHARED MEMBER EXPERIENCES -->
+    <section class="members__section" id="member-experiences">
+      <div class="members__section-heading">
+        <div>
+          <span class="members__eyebrow">01 / A LIVING COMMUNITY</span>
+          <h2>There's more<br>to discover <em>here.</em></h2>
+        </div>
+        <p>Follow the ideas, people, and small moments that make Ɛdan what it is.</p>
+      </div>
+
+      <div class="members__editorial-grid">
+        <article class="members__feature members__feature--large">
+          <a href="#community" class="members__image-link" aria-label="Explore the community">
+            <img src="../images/member-community.jpg"
+                 alt="A shared gathering space at Ɛdan" loading="lazy">
+            <span class="members__image-arrow" aria-hidden="true"></span>
+          </a>
+          <div class="members__feature-copy">
+            <span class="members__number">01 — COME TOGETHER</span>
+            <h3>Good things<br>grow together.</h3>
+            <p>Meet the people who make up the Ɛdan community.</p>
+            <a href="#community" class="members__link">Explore the community ↗</a>
+          </div>
+        </article>
+
+        <article class="members__feature members__feature--offset">
+          <a href="#behind-scenes" class="members__image-link" aria-label="Explore behind the scenes">
+            <img src="../images/member-research.jpg"
+                 alt="Materials and work in progress in a creative studio" loading="lazy">
+            <span class="members__image-arrow" aria-hidden="true">↗</span>
+          </a>
+          <div class="members__feature-copy">
+            <span class="members__number">02 — STILL IN PROCESS</span>
+            <h3>Not everything<br>is finished.</h3>
+            <p>Notes, experiments, works in progress, and ideas taking shape.</p>
+            <a href="#behind-scenes" class="members__link">Go behind the scenes ↗</a>
+          </div>
+        </article>
+
+        <article class="members__feature members__feature--wide">
+          <a href="#monthly-social" class="members__image-link" aria-label="Discover gatherings">
+            <img src="../images/member-gathering.jpg"
+                 alt="A communal table prepared for a gathering" loading="lazy">
+            <span class="members__image-arrow" aria-hidden="true">↗</span>
+          </a>
+          <div class="members__feature-copy">
+            <span class="members__number">03 — GATHER</span>
+            <h3>There's always room<br>at the table.</h3>
+            <p>Find invitations and details for the monthly Ɛdan social.</p>
+            <a href="#monthly-social" class="members__link">Find your next gathering ↗</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- FULL-WIDTH INTERLUDE -->
+    <section class="members__interlude">
+      <img src="../images/member-garden.jpg"
+           alt="A garden at Ɛdan in the afternoon" loading="lazy">
+      <div class="members__interlude-copy">
+        <span class="members__eyebrow">A MOMENT AT ƐDAN</span>
+        <h2>Stay curious.<br><em>Stay a little longer.</em></h2>
+        <p>There is always something growing, changing, or beginning here.</p>
+      </div>
+    </section>
+
+    <!-- ANNUAL MEMBERSHIP -->
+    <section class="members__annual" id="annual-content">
+      <div class="members__annual-heading">
+        <span class="members__eyebrow">02 / THE DEEPER CUT</span>
+        <h2>For those who<br>stay a little <em>longer.</em></h2>
+        <p>Some doors open a little further with an annual membership.</p>
+      </div>
+
+      <div class="members__annual-grid">
+        <article class="members__annual-feature">
+          <img src="../images/member-films.jpg"
+               alt="A film being prepared in a creative studio" loading="lazy">
+          <div class="members__annual-feature-copy">
+            <span class="members__number">04 — WATCH & DISCOVER</span>
+            <h3>Stories beyond<br>the surface.</h3>
+            <p>Bonus films and additional stories from inside Ɛdan.</p>
+            <a href="#bonus-videos" class="members__link">Explore the films ↗</a>
+          </div>
+        </article>
+
+        <article class="members__annual-feature members__annual-feature--second">
+          <img src="../images/member-conversation.jpg"
+               alt="A quiet space for a personal conversation" loading="lazy">
+          <div class="members__annual-feature-copy">
+            <span class="members__number">05 — MAKE TIME</span>
+            <h3>A conversation<br>of your own.</h3>
+            <p>One-to-one appointments for a more personal connection with Ɛdan.</p>
+            <a href="#appointments" class="members__link">Appointment details ↗</a>
+          </div>
+        </article>
+      </div>
+
+      <p class="members__locked-note" id="annualLocked" hidden>
+        The deeper cut is reserved for active annual members.
+      </p>
+    </section>
+
+    <!-- MEMBER PRIVILEGES -->
+    <section class="members__privileges">
+      <div class="members__privileges-image">
+        <img src="../images/member-small-moments.jpg"
+             alt="A quiet moment at Ɛdan" loading="lazy">
+      </div>
+      <div class="members__privileges-copy">
+        <span class="members__eyebrow">03 / A LITTLE EXTRA</span>
+        <h2>Small moments.<br><em>Good things.</em></h2>
+        <p>Enjoy a 10% member discount on Small Moments and Ɛdan residencies, subject to applicable booking terms.</p>
+        <p class="members__fine-print">Contact Ɛdan to confirm eligibility and how to redeem your discount.</p>
+      </div>
+    </section>
+
+    <!-- CONTENT DESTINATIONS -->
+    <div class="members__destinations">      
+    <section class="members__destination members__community" id="community">
+      <div class="members__community-intro">
+        <span class="members__eyebrow">01 / COMMUNITY</span>
+        <h2>The conversation<br>starts here.</h2>
+        <p>A shared space for the people who make Ɛdan what it is.</p>
+        <button
+          class="members__chat-open"
+          id="openCommunityChat"
+          type="button"
+          aria-expanded="false"
+          aria-controls="communityChatPanel"
+        >
+          Enter the conversation <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+
+      <section
+        class="members__chat-panel"
+        id="communityChatPanel"
+        aria-label="Ɛdan community chat"
+        hidden
+      >
+        <header class="members__chat-header">
+          <div class="members__chat-heading">
+            <span class="members__chat-status-dot" aria-hidden="true"></span>
+            <div>
+              <h3>The Ɛdan table</h3>
+              <p>A space to share, ask and connect.</p>
+            </div>
+          </div>
+
+          <button
+            class="members__chat-close"
+            id="closeCommunityChat"
+            type="button"
+            aria-label="Close community chat"
+          >−</button>
+        </header>
+
+        <div
+          class="members__chat-messages"
+          id="chatMessages"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label="Community messages"
+        >
+          <p class="members__chat-loading" id="chatLoading">
+            Making room at the table…
+          </p>
+        </div>
+
+        <p class="members__chat-notice" id="chatNotice" role="status"></p>
+
+        <div class="members__chat-identity" id="chatIdentity" hidden>
+          <p class="members__chat-kicker">BEFORE YOU JOIN IN</p>
+          <h4>What should we call you?</h4>
+          <p>Choose a username for your messages. You can change it later.</p>
+
+          <form id="chatUsernameForm" class="members__chat-username-form">
+            <label for="chatUsername">Your username</label>
+            <input
+              id="chatUsername"
+              name="username"
+              type="text"
+              minlength="3"
+              maxlength="24"
+              pattern="[A-Za-z0-9_]+"
+              autocomplete="nickname"
+              placeholder="e.g. gardenfriend"
+              required
+            >
+            <small>3–24 characters. Letters, numbers and underscores.</small>
+            <button type="submit" id="saveChatUsername">
+              Save username <span aria-hidden="true">↗</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="members__chat-composer" id="chatComposer" hidden>
+          <div class="members__chat-composer-top">
+            <span id="chatCurrentUsername"></span>
+            <button type="button" id="changeChatUsername">
+              Change username
+            </button>
+          </div>
+
+          <form id="chatMessageForm">
+            <button
+              class="members__chat-emoji"
+              id="chatEmoji"
+              type="button"
+              aria-label="Add an emoji"
+              title="Add an emoji"
+            >☺</button>
+
+            <textarea
+              id="chatMessageInput"
+              name="message"
+              rows="1"
+              maxlength="1000"
+              placeholder="Share something with the table…"
+              aria-label="Write a message"
+              required
+            ></textarea>
+
+            <button
+              class="members__chat-send"
+              id="chatSendButton"
+              type="submit"
+              aria-label="Send message"
+            >↗</button>
+          </form>
+
+          <p class="members__chat-footnote">
+            Be kind. Leave room for everyone.
+          </p>
+        </div>
+      </section>
+      </section>
+
+
+
+      <section class="members__destination" id="behind-scenes">
+        <span class="members__eyebrow">02 / IN PROCESS</span>
+        <div>
+          <h2>From behind<br>the scenes.</h2>
+          <p>Member stories and works in progress will appear here.</p>
+        </div>
+        <span class="members__destination-mark" aria-hidden="true">↗</span>
+      </section>
+
+      <section class="members__destination" id="monthly-social">
+        <span class="members__eyebrow">03 / GATHER</span>
+        <div>
+          <h2>See you<br>around the table.</h2>
+          <p>Invitations and gathering details will appear here.</p>
+        </div>
+        <span class="members__destination-mark" aria-hidden="true">↗</span>
+      </section>
+
+      <section class="members__destination members__destination--annual" id="bonus-videos">
+        <span class="members__eyebrow">04 / ANNUAL MEMBERS</span>
+        <div>
+          <h2>More to<br>discover.</h2>
+          <p>Bonus videos will appear here when the content library is connected.</p>
+        </div>
+        <span class="members__destination-mark" aria-hidden="true">↗</span>
+      </section>
+
+      <section class="members__destination members__destination--annual" id="appointments">
+        <span class="members__eyebrow">05 / ANNUAL MEMBERS</span>
+        <div>
+          <h2>Make a little<br>time.</h2>
+          <p>Appointment booking will be connected here.</p>
+        </div>
+        <span class="members__destination-mark" aria-hidden="true">↗</span>
+      </section>
+    </div>
+
+    <!-- SIGN OUT -->
+    <footer class="members__footer">
+      <span class="members__eyebrow">UNTIL NEXT TIME</span>
+      <p>Thank you for being part of Ɛdan.</p>
+      <button class="members__logout" id="memberLogout" type="button">
+        Log out ↗
+      </button>
+    </footer>
+
+    <p class="members__message" id="membersMessage" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/members.js"></script>
+  <script src="../js/members-chat.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F2EAD9">
+  <title>Dashboard — Ɛdan</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/pages/admin.css">
+</head>
+<body class="page-admin">
+  <div class="admin">
+    <header class="admin__header">
+      <a class="admin__brand" href="../">Ɛdan</a>
+      <div class="admin__actions">
+        <a class="admin__button" href="../">View site</a>
+        <button id="adminLogout" class="admin__button" type="button">Log out</button>
+      </div>
+    </header>
+
+    <section class="admin__intro">
+      <span class="eyebrow">team dashboard</span>
+      <h1>Manage the <em>homepage.</em></h1>
+      <p id="adminMessage" role="status" aria-live="polite">Checking your access…</p>
+    </section>
+
+    <main id="adminDashboard" hidden>
+      <section class="admin__stats" aria-label="Site overview">
+        <article class="admin__stat">
+          <span class="eyebrow">total members</span>
+          <p id="statMembers" class="admin__stat-value">—</p>
+        </article>
+        <article class="admin__stat">
+          <span class="eyebrow">homepage video views</span>
+          <p id="statViews" class="admin__stat-value">—</p>
+        </article>
+        <article class="admin__stat">
+          <span class="eyebrow">video uploads</span>
+          <p id="statUploads" class="admin__stat-value">—</p>
+        </article>
+      </section>
+
+      <div class="admin__grid">
+        <article class="admin__card admin__card--wide" aria-labelledby="videoHeading">
+          <span class="eyebrow">hero video</span>
+          <h2 id="videoHeading">Homepage background</h2>
+          <p class="admin__hint">This video plays behind the title on the homepage. Upload a new file to replace it.</p>
+
+          <div class="admin__frame">
+            <p id="videoEmpty" class="admin__frame-empty" hidden>No video uploaded yet. The homepage shows its still image.</p>
+            <video id="videoPreview" class="admin__video" controls muted playsinline preload="metadata" hidden></video>
+          </div>
+
+          <form id="uploadForm" class="admin__upload">
+            <label class="admin__label" for="videoFile">Choose an MP4 file (up to 50 MB)</label>
+            <input id="videoFile" class="admin__file" type="file" accept="video/mp4,.mp4" required>
+            <button id="uploadButton" class="admin__button admin__button--solid" type="submit">Upload video</button>
+          </form>
+        </article>
+
+        <article class="admin__card" aria-labelledby="liveHeading">
+          <span class="eyebrow">live site</span>
+          <h2 id="liveHeading">Homepage</h2>
+          <p class="admin__hint">Changes can take about a minute to appear on the homepage after uploading.</p>
+          <a class="admin__button" href="../" target="_blank" rel="noopener">Open homepage ↗</a>
+        </article>
+
+        <article class="admin__card admin__card--full" aria-labelledby="uploadsHeading">
+          <span class="eyebrow">recent uploads</span>
+          <h2 id="uploadsHeading">Latest hero videos</h2>
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr><th scope="col">File</th><th scope="col">Size</th><th scope="col">Uploaded</th></tr>
+              </thead>
+              <tbody id="uploadsBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="admin__card admin__card--full" aria-labelledby="applicationsHeading">
+          <span class="eyebrow">membership applications</span>
+          <h2 id="applicationsHeading">Applications</h2>
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr><th scope="col">Email</th><th scope="col">Applied</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr>
+              </thead>
+              <tbody id="applicationsBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="admin__card admin__card--full" aria-labelledby="membersHeading">
+          <span class="eyebrow">memberships</span>
+          <h2 id="membersHeading">Members</h2>
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr><th scope="col">Email</th><th scope="col">Tier</th><th scope="col">Status</th><th scope="col">Ends</th></tr>
+              </thead>
+              <tbody id="membersBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+      <dialog id="reviewDialog" class="admin__dialog" aria-labelledby="reviewHeading">
+        <form id="reviewForm" class="admin__review">
+          <span class="eyebrow">membership application</span>
+          <h2 id="reviewHeading">Review application</h2>
+          <p class="admin__hint">Applicant: <strong id="reviewEmail"></strong></p>
+
+          <label class="admin__label" for="reviewTier">Membership type</label>
+          <select id="reviewTier" class="admin__file" required>
+            <option value="">Choose monthly or annual</option>
+            <option value="monthly">Monthly</option>
+            <option value="annual">Annual</option>
+          </select>
+
+          <label class="admin__label" for="reviewStart">Start date</label>
+          <input id="reviewStart" class="admin__file" type="date" required>
+
+          <label class="admin__label" for="reviewEnd">End date</label>
+          <input id="reviewEnd" class="admin__file" type="date" required>
+
+          <p id="reviewError" class="admin__review-error" role="alert" hidden></p>
+
+          <div class="admin__review-actions">
+            <button id="approveButton" class="admin__button admin__button--solid" type="button">Approve</button>
+            <button id="rejectButton" class="admin__button admin__button--danger" type="button">Reject</button>
+            <button id="reviewCancel" class="admin__button" type="button">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <section id="adminRestricted" class="admin__restricted" hidden>
+      <span class="eyebrow">access restricted</span>
+      <h2>This space is for the <em>Ɛdan team.</em></h2>
+      <p class="admin__hint">This account has not been authorised to manage the site.</p>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="../js/admin.js"></script>
+</body>
+</html>

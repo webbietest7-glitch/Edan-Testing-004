@@ -1,0 +1,13 @@
+{
+  "projectId": "72489382",
+  "functions": {
+    "paystack-webhook": {
+      "hasChanged": false,
+      "hash": "2156103c85af544ea6c51c6438a494a061b6759373802d4cbbaf5677c16251ad"
+    },
+    "payment-receipt": {
+      "hasChanged": false,
+      "hash": "189c760741578267feb160d8d95bd9fdd73c962f77e5196315a4d36d19a4027e"
+    }
+  }
+}
