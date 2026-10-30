@@ -337,6 +337,137 @@
   margin-top: 8px;
 }
 
+.admin__section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.admin__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin__segment {
+  display: inline-flex;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin__segment-button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .3s var(--ease), color .3s var(--ease);
+}
+
+.admin__segment-button + .admin__segment-button {
+  border-left: 1px solid var(--ink);
+}
+
+.admin__segment-button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.admin__segment-button:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: -2px;
+}
+
+.admin__search {
+  width: min(360px, 100%);
+}
+
+.admin__inline-form,
+.admin__block-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--admin-line);
+}
+
+.admin__block-form #blockSubmit {
+  justify-self: start;
+}
+
+.admin__inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin__inline-row .admin__file {
+  flex: 1 1 240px;
+  width: auto;
+}
+
+.admin__form-grid {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 12px 16px;
+  align-items: center;
+}
+
+.admin__dialog--wide {
+  width: min(640px, 92%);
+}
+
+.admin__details {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 12px 16px;
+  margin: 8px 0 16px;
+  font-size: 14px;
+}
+
+.admin__details dt {
+  color: var(--admin-soft);
+}
+
+.admin__details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin__button--small[disabled] {
+  opacity: .5;
+}
+
+.admin__table td .admin__button--small {
+  margin-top: 0;
+}
+
+@media (max-width: 560px) {
+  .admin__form-grid,
+  .admin__details {
+    grid-template-columns: 1fr;
+  }
+
+  .admin__segment {
+    width: 100%;
+  }
+
+  .admin__segment-button {
+    flex: 1 1 0;
+    padding: 0 8px;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

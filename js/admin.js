@@ -7,6 +7,8 @@ import {
 } from "./supabase-client.js";
 import { formatDate, renderEmptyRow, createRow } from "./admin-table.js";
 import { loadMemberships } from "./admin-memberships.js";
+import { loadStayBookings } from "./admin-bookings.js";
+import { loadAvailability } from "./admin-availability.js";
 
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const RECENT_UPLOAD_LIMIT = 5;
@@ -111,7 +113,9 @@ async function refreshDashboard() {
     showCurrentVideo(),
     loadStats(),
     loadRecentUploads(),
-    loadMemberships()
+    loadMemberships(),
+    loadStayBookings(),
+    loadAvailability()
   ]);
 }
 

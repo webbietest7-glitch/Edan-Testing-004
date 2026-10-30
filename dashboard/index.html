@@ -104,6 +104,102 @@
             </table>
           </div>
         </article>
+        <article class="admin__card admin__card--full" aria-labelledby="bookingsHeading">
+          <div class="admin__section-head">
+            <div>
+              <span class="eyebrow">stay bookings</span>
+              <h2 id="bookingsHeading">Bookings</h2>
+            </div>
+            <button id="addBookingButton" class="admin__button admin__button--solid" type="button">Add booking</button>
+          </div>
+
+          <div class="admin__toolbar">
+            <div class="admin__segment" role="group" aria-label="Show bookings">
+              <button class="admin__segment-button" type="button" data-booking-view="upcoming" aria-pressed="true">Upcoming</button>
+              <button class="admin__segment-button" type="button" data-booking-view="past" aria-pressed="false">Past</button>
+              <button class="admin__segment-button" type="button" data-booking-view="all" aria-pressed="false">All</button>
+            </div>
+            <input id="bookingSearch" class="admin__file admin__search" type="search" placeholder="Search by name, email or reference" aria-label="Search bookings">
+          </div>
+
+          <p id="bookingsError" class="admin__review-error" role="alert" hidden></p>
+
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr>
+                  <th scope="col">Reference</th>
+                  <th scope="col">Guest</th>
+                  <th scope="col">Room</th>
+                  <th scope="col">Dates</th>
+                  <th scope="col">Guests</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Source</th>
+                  <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="bookingsBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="admin__card admin__card--full" aria-labelledby="roomsHeading">
+          <span class="eyebrow">rooms</span>
+          <h2 id="roomsHeading">Rooms</h2>
+          <p class="admin__hint">Add each room by name. Closed rooms cannot take new bookings but keep their existing ones.</p>
+
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr><th scope="col">Room</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr>
+              </thead>
+              <tbody id="roomsBody"></tbody>
+            </table>
+          </div>
+
+          <form id="roomForm" class="admin__inline-form">
+            <label class="admin__label" for="roomName">New room name</label>
+            <div class="admin__inline-row">
+              <input id="roomName" class="admin__file" type="text" maxlength="80" required>
+              <button class="admin__button admin__button--solid" type="submit">Add room</button>
+            </div>
+            <p id="roomError" class="admin__review-error" role="alert" hidden></p>
+          </form>
+        </article>
+
+        <article class="admin__card admin__card--full" aria-labelledby="blocksHeading">
+          <span class="eyebrow">room availability</span>
+          <h2 id="blocksHeading">Blocked dates</h2>
+          <p class="admin__hint">Close a room for maintenance or team use. The end date is the first day the room is free again. Dates with a confirmed booking must be cancelled first.</p>
+
+          <form id="blockForm" class="admin__block-form">
+            <label class="admin__label" for="blockRoom">Room</label>
+            <select id="blockRoom" class="admin__file" required></select>
+
+            <label class="admin__label" for="blockStart">From</label>
+            <input id="blockStart" class="admin__file" type="date" required>
+
+            <label class="admin__label" for="blockEnd">Until (first day free)</label>
+            <input id="blockEnd" class="admin__file" type="date" required>
+
+            <label class="admin__label" for="blockReason">Reason (optional)</label>
+            <input id="blockReason" class="admin__file" type="text" maxlength="200">
+
+            <p id="blockError" class="admin__review-error" role="alert" hidden></p>
+
+            <button id="blockSubmit" class="admin__button admin__button--solid" type="submit">Block dates</button>
+          </form>
+
+          <div class="admin__table-wrap">
+            <table class="admin__table">
+              <thead>
+                <tr><th scope="col">Room</th><th scope="col">Dates</th><th scope="col">Reason</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr>
+              </thead>
+              <tbody id="blocksBody"></tbody>
+            </table>
+          </div>
+        </article>
       </div>
       <dialog id="reviewDialog" class="admin__dialog" aria-labelledby="reviewHeading">
         <form id="reviewForm" class="admin__review">
@@ -130,6 +226,72 @@
             <button id="approveButton" class="admin__button admin__button--solid" type="button">Approve</button>
             <button id="rejectButton" class="admin__button admin__button--danger" type="button">Reject</button>
             <button id="reviewCancel" class="admin__button" type="button">Cancel</button>
+          </div>
+        </form>
+      </dialog>
+
+      <dialog id="bookingDialog" class="admin__dialog admin__dialog--wide" aria-labelledby="bookingDialogHeading">
+        <div class="admin__review">
+          <span class="eyebrow">stay booking</span>
+          <h2 id="bookingDialogHeading">Booking details</h2>
+          <div id="bookingDetails" class="admin__details"></div>
+          <p id="bookingDetailError" class="admin__review-error" role="alert" hidden></p>
+          <div id="bookingActions" class="admin__review-actions"></div>
+          <div class="admin__review-actions">
+            <button id="bookingDialogClose" class="admin__button" type="button">Close</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog id="manualBookingDialog" class="admin__dialog admin__dialog--wide" aria-labelledby="manualBookingHeading">
+        <form id="manualBookingForm" class="admin__review">
+          <span class="eyebrow">manual booking</span>
+          <h2 id="manualBookingHeading">Add a booking</h2>
+          <p class="admin__hint">For bookings received by phone or WhatsApp. These are recorded as manual and are not linked to a Paystack payment.</p>
+
+          <div class="admin__form-grid">
+            <label class="admin__label" for="manualRoom">Room</label>
+            <select id="manualRoom" class="admin__file" required></select>
+
+            <label class="admin__label" for="manualRate">Rate</label>
+            <select id="manualRate" class="admin__file" required>
+              <option value="room">Room only (GH₵650 / night)</option>
+              <option value="breakfast">With breakfast (GH₵700 / night)</option>
+            </select>
+
+            <label class="admin__label" for="manualCheckIn">Check-in</label>
+            <input id="manualCheckIn" class="admin__file" type="date" required>
+
+            <label class="admin__label" for="manualCheckOut">Check-out</label>
+            <input id="manualCheckOut" class="admin__file" type="date" required>
+
+            <label class="admin__label" for="manualGuests">Guests</label>
+            <select id="manualGuests" class="admin__file" required>
+              <option value="1">1 guest</option>
+              <option value="2">2 guests</option>
+            </select>
+          </div>
+
+          <div class="admin__form-grid">
+            <label class="admin__label" for="manualName">Guest full name</label>
+            <input id="manualName" class="admin__file" type="text" maxlength="120" required>
+
+            <label class="admin__label" for="manualEmail">Email</label>
+            <input id="manualEmail" class="admin__file" type="email" maxlength="254" required>
+
+            <label class="admin__label" for="manualPhone">Phone</label>
+            <input id="manualPhone" class="admin__file" type="tel" maxlength="40" required>
+
+            <label class="admin__label" for="manualNotes">Notes (optional)</label>
+            <textarea id="manualNotes" class="admin__file" rows="3" maxlength="1000"></textarea>
+          </div>
+
+          <p id="manualTotal" class="admin__hint" aria-live="polite"></p>
+          <p id="manualError" class="admin__review-error" role="alert" hidden></p>
+
+          <div class="admin__review-actions">
+            <button id="manualSubmit" class="admin__button admin__button--solid" type="submit">Save booking</button>
+            <button id="manualCancel" class="admin__button" type="button">Cancel</button>
           </div>
         </form>
       </dialog>
