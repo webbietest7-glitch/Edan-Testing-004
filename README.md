@@ -79,7 +79,9 @@ After the first deploy, add the Vercel domain to the allowed redirect URLs in Su
 
 ## 4. Connecting to Supabase
 
-The site talks to one Supabase project. The public URL and the publishable (anon) key are written directly in these files:
+The site talks to one Supabase project: `https://qavarsxjqxogfilpgyxn.supabase.co`. This is the project that holds the Stay booking functions, the membership tables and the Edge Functions. Earlier versions of the site pointed at a different project (`ayjyvuulgqobppyvroyl`) that does not have the Stay booking setup, so availability checks failed with "Could not find the function stay_room_availability". That project is no longer used.
+
+The project URL and its publishable (anon) key are written directly in these files, and they must match each other and the project above:
 
 - `js/supabase-client.js`
 - `js/account.js`
@@ -87,9 +89,9 @@ The site talks to one Supabase project. The public URL and the publishable (anon
 - `js/members-chat.js`
 - `js/nav.js`
 
-The publishable key is designed to be public. Access control is enforced by Row Level Security in the database, not by hiding the key.
+The publishable key is designed to be public. Access control is enforced by Row Level Security in the database, not by hiding the key. The key for this project is the anon key shown under Project Settings, API in the Supabase dashboard.
 
-To use your own Supabase project, change the URL and key in all five files, then apply the migrations in `supabase/migrations/` in filename order (with the Supabase CLI, `supabase db push`, or by pasting each file into the Supabase SQL editor).
+To use a different Supabase project, change the URL and key in all five files, then apply the migrations in `supabase/migrations/` in filename order (with the Supabase CLI, `supabase db push`, or by pasting each file into the Supabase SQL editor). Then deploy the Edge Functions and set their secrets (see below). Check that the Stay function exists before testing: `stay_room_availability` should appear under Database, Functions.
 
 ### Server-side secrets
 
