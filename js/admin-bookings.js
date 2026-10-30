@@ -9,7 +9,7 @@ import {
 import { fetchRooms } from "./admin-availability.js";
 
 const BOOKING_LIMIT = 100;
-const BOOKING_COLUMNS = "id, booking_reference, guest_name, guest_email, guest_phone, check_in, check_out, guests, breakfast_included, nightly_rate_ghs, total_ghs, status, source, notes, stay_rooms(name)";
+const BOOKING_COLUMNS = "id, booking_reference, guest_name, guest_email, guest_phone, check_in, check_out, guests, breakfast_included, nightly_rate_ghs, total_ghs, status, source, notes, checked_in_at, stay_rooms(name)";
 const RATES = { room: 650, breakfast: 700 };
 
 const STATUS_LABELS = {
@@ -57,6 +57,11 @@ function sourceLabel(booking) {
   return booking.source === "manual" ? "Manual" : "Online";
 }
 
+function statusLabel(booking) {
+  if (booking.status === "confirmed" && booking.checked_in_at) return "Checked in";
+  return STATUS_LABELS[booking.status] ?? booking.status;
+}
+
 function selectedView() {
   return document.querySelector("[data-booking-view][aria-pressed='true']")?.dataset.bookingView ?? "upcoming";
 }
@@ -74,7 +79,7 @@ function renderBookingRow(booking) {
     `${formatDay(booking.check_in)} to ${formatDay(booking.check_out)}`,
     String(booking.guests),
     formatMoney(booking.total_ghs),
-    STATUS_LABELS[booking.status] ?? booking.status,
+    statusLabel(booking),
     sourceLabel(booking)
   ];
 
@@ -147,7 +152,14 @@ function renderBookingDetails(booking) {
   list.className = "admin__details";
 
   addDetail(list, "Reference", booking.booking_reference);
-  addDetail(list, "Status", STATUS_LABELS[booking.status] ?? booking.status);
+  addDetail(list, "Status", statusLabel(booking));
+  if (booking.checked_in_at) {
+    addDetail(
+      list,
+      "Checked in",
+      new Date(booking.checked_in_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })
+    );
+  }
   addDetail(list, "Room", booking.stay_rooms?.name ?? "—");
   addDetail(list, "Check-in", formatDay(booking.check_in));
   addDetail(list, "Check-out", formatDay(booking.check_out));
@@ -174,26 +186,33 @@ function renderBookingDetails(booking) {
   bookingDetails.replaceChildren(list);
 }
 
+function actionButton(label, action, className) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = className;
+  button.textContent = label;
+  button.dataset.bookingAction = action;
+  return button;
+}
+
 function renderBookingActions(booking) {
+  bookingActions.dataset.bookingId = booking.id;
+
   if (booking.status !== "confirmed") {
     bookingActions.replaceChildren();
     return;
   }
 
-  const completeButton = document.createElement("button");
-  completeButton.type = "button";
-  completeButton.className = "admin__button admin__button--solid";
-  completeButton.textContent = "Mark as completed";
-  completeButton.dataset.bookingStatus = "completed";
+  const buttons = [];
+  if (!booking.checked_in_at) {
+    buttons.push(actionButton("Check in guest", "check-in", "admin__button admin__button--solid"));
+  }
+  buttons.push(
+    actionButton("Mark as completed", "completed", "admin__button"),
+    actionButton("Cancel booking", "cancelled", "admin__button admin__button--danger")
+  );
 
-  const cancelButton = document.createElement("button");
-  cancelButton.type = "button";
-  cancelButton.className = "admin__button admin__button--danger";
-  cancelButton.textContent = "Cancel booking";
-  cancelButton.dataset.bookingStatus = "cancelled";
-
-  bookingActions.replaceChildren(completeButton, cancelButton);
-  bookingActions.dataset.bookingId = booking.id;
+  bookingActions.replaceChildren(...buttons);
 }
 
 async function openBookingDetails(bookingId) {
@@ -218,18 +237,11 @@ async function openBookingDetails(bookingId) {
   renderBookingActions(data);
 }
 
-async function changeBookingStatus(bookingId, status) {
-  if (status === "cancelled" && !window.confirm("Cancel this booking? The room's dates will become available.")) {
-    return;
-  }
-
+async function runBookingAction(bookingId, rpcName, params) {
   bookingActions.querySelectorAll("button").forEach(button => { button.disabled = true; });
   setMessageText(bookingDetailError, "");
 
-  const { error } = await supabase.rpc("admin_set_booking_status", {
-    p_booking_id: bookingId,
-    p_status: status
-  });
+  const { error } = await supabase.rpc(rpcName, { p_booking_id: bookingId, ...params });
 
   if (error) {
     setMessageText(bookingDetailError, error.message);
@@ -239,6 +251,18 @@ async function changeBookingStatus(bookingId, status) {
 
   bookingDialog.close();
   await loadStayBookings();
+}
+
+function changeBookingStatus(bookingId, status) {
+  if (status === "cancelled" && !window.confirm("Cancel this booking? The room's dates will become available.")) {
+    return;
+  }
+
+  return runBookingAction(bookingId, "admin_set_booking_status", { p_status: status });
+}
+
+function checkInBooking(bookingId) {
+  return runBookingAction(bookingId, "admin_check_in_booking", {});
 }
 
 function updateManualTotal() {
@@ -342,9 +366,16 @@ bookingsBody.addEventListener("click", (event) => {
 });
 
 bookingActions.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-booking-status]");
+  const button = event.target.closest("button[data-booking-action]");
   if (!button) return;
-  changeBookingStatus(bookingActions.dataset.bookingId, button.dataset.bookingStatus);
+
+  const bookingId = bookingActions.dataset.bookingId;
+  const action = button.dataset.bookingAction;
+  if (action === "check-in") {
+    checkInBooking(bookingId);
+  } else {
+    changeBookingStatus(bookingId, action);
+  }
 });
 
 bookingDialogClose.addEventListener("click", () => bookingDialog.close());

@@ -152,7 +152,9 @@ Known issue: the sign-up form on `/account/` does not match the script (it has n
 - **Homepage video:** an admin uploads an MP4 up to 50 MB. It replaces the file in the `site-videos` bucket and is logged in `video_uploads`.
 - **Applications:** lists membership applications. Review opens a dialog to set the tier and start and end dates, then approve or reject. Approval sets the member to active. Rejection asks for confirmation first.
 - **Members:** lists the 100 most recent memberships.
-- Scripts: `js/admin.js`, `js/admin-memberships.js`, `js/admin-table.js`.
+- **Bookings:** lists Stay bookings with Upcoming (not yet checked out), Past and All views, search by name, email or reference, and an Add booking button for phone or WhatsApp bookings. Opening a booking shows its details. Confirmed bookings can be checked in once the arrival date has arrived (**Check in guest**, which records the time and shows the booking as Checked in), marked completed when the guest leaves, or cancelled to free the dates.
+- **Rooms and blocked dates:** add rooms, close or reopen them for new bookings, and block dates for maintenance or team use. A block cannot cover dates that already have a confirmed booking.
+- Scripts: `js/admin.js`, `js/admin-memberships.js`, `js/admin-bookings.js`, `js/admin-availability.js`, `js/admin-table.js`.
 - Non-admins see an "access restricted" message. The real protection is the database, so admin actions still fail for non-admins even if the page is changed.
 
 ---
@@ -234,7 +236,7 @@ Payment never approves a membership. An admin still reviews the application and 
 
 Functions: `is_edan_admin`, `approve_membership_application`, `reject_membership_application` (admins), `record_paystack_event` (server only).
 
-Stay functions: `stay_room_availability` (anyone), `create_stay_hold` (signed-in guests), `admin_create_manual_booking`, `admin_block_room` and `admin_set_booking_status` (admins), and `prepare_stay_payment`, `confirm_stay_payment` and `mark_stay_payment_failed` (server only).
+Stay functions: `stay_room_availability` (anyone), `create_stay_hold` (signed-in guests), `admin_create_manual_booking`, `admin_block_room`, `admin_set_booking_status` and `admin_check_in_booking` (admins; check-in is recorded in `stay_bookings.checked_in_at`), and `prepare_stay_payment`, `confirm_stay_payment` and `mark_stay_payment_failed` (server only).
 
 Tables `member_chat_messages` and `member_chat_profiles` are used by the chat, but no migration in this repository creates them. Create them before enabling the chat on a new project.
 
@@ -270,3 +272,4 @@ Dockerfile              container image for the static site
 - Placeholder links remain in the footer and contact page.
 - Stay online booking has not been tested with Paystack. It needs a Paystack test secret key in the `PAYSTACK_SECRET_KEY` secret before payments can run.
 - Stay refunds for mismatched or conflicting payments are manual. The booking is marked Refund required, and no admin screen for this exists yet.
+- Check-in and check-out are recorded by staff by hand. Nothing marks a booking as no-show automatically.
